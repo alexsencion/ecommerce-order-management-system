@@ -1,0 +1,41 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.swp
+.idea/
+
+# Secrets — never committed
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
+.env
+*.pfx
+*.p12
+local.settings.json
+secrets.json
+
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+
+# Test coverage
+coverage-report/
+TestResults/
+*.cobertura.xml
+
+# Docker volumes
+.docker/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Azure
+.azure/
+
+# Github
+.github/
