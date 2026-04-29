@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="ECommerce.API/ECommerce.API.csproj" Id="41d27d24-b1f5-4308-aae9-f550a62ac735">
+      <BuildDependency Project="ECommerce.Application/ECommerce.Application.csproj" />
+      <BuildDependency Project="ECommerce.Infrastructure/ECommerce.Infrastructure.csproj" />
+    </Project>
+    <Project Path="ECommerce.Application/ECommerce.Application.csproj" Id="ed143867-ab3c-4fe1-8ea2-d2bbb3f3aa21">
+      <BuildDependency Project="ECommerce.Domain/ECommerce.Domain.csproj" />
+    </Project>
+    <Project Path="ECommerce.Domain/ECommerce.Domain.csproj" Id="cd66fc3f-7646-48f9-8fef-6d8632ed52ac" />
+    <Project Path="ECommerce.Infrastructure/ECommerce.Infrastructure.csproj" Id="ce6a723d-be74-4b21-b57d-44abc50b11bc">
+      <BuildDependency Project="ECommerce.Application/ECommerce.Application.csproj" />
+      <BuildDependency Project="ECommerce.Domain/ECommerce.Domain.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="ECommerce.IntegrationTests/ECommerce.IntegrationTests.csproj" Id="3609e759-4970-43cd-a736-d97aa5eb309b">
+      <BuildDependency Project="ECommerce.API/ECommerce.API.csproj" />
+      <BuildDependency Project="ECommerce.Infrastructure/ECommerce.Infrastructure.csproj" />
+    </Project>
+    <Project Path="ECommerce.UnitTests/ECommerce.UnitTests.csproj" Id="7a034b41-9753-4762-9db5-bb00e2ba0193">
+      <BuildDependency Project="ECommerce.Application/ECommerce.Application.csproj" />
+      <BuildDependency Project="ECommerce.Domain/ECommerce.Domain.csproj" />
+    </Project>
+  </Folder>
+</Solution>
