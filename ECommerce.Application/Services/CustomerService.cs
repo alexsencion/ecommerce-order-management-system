@@ -46,7 +46,7 @@ namespace ECommerce.Application.Services
             if (customer == null)
                 return Result<bool>.NotFound($"Customer {id} not found.");
 
-            if (customer.IsActive)
+            if (!customer.IsActive)
                 return Result<bool>.Failure($"Customer is already inactive.");
 
             customer.IsActive = false;
