@@ -26,7 +26,7 @@ namespace ECommerce.Application.Validators
                 .MaximumLength(255).WithMessage("Email must not exceed 255 characters.");
 
             RuleFor(x => x.Phone)
-                .Matches(@"^\+?[1-9]\d{1,14}$")
+                .Matches(@"^\+[1-9]\d{6,14}$")
                 .WithMessage("Phone number must be in E.164 format (e.g. +18095551234).")
                 .When(x => !string.IsNullOrWhiteSpace(x.Phone));
 
