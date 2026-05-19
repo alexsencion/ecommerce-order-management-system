@@ -19,16 +19,19 @@ namespace ECommerce.Infrastructure.Repositories
         public ICustomerRepository Customers { get; }
         public IProductRepository Products { get; }
         public IOrderRepository Orders { get; }
+        public ICategoryRepository Categories { get; }
 
         public UnitOfWork(AppDbContext context,
                           ICustomerRepository customers,
                           IProductRepository products,
-                          IOrderRepository orders) 
+                          IOrderRepository orders,
+                          ICategoryRepository categories) 
         {
             _context = context;
             Customers = customers;
             Products = products;
             Orders = orders;
+            Categories = categories;
         }
 
         public async Task BeginTransactionAsync() => _transaction = await _context.Database.BeginTransactionAsync();
