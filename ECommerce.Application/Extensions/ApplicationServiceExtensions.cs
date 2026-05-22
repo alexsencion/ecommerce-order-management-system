@@ -22,7 +22,10 @@ namespace ECommerce.Application.Extensions
             });
 
             services.AddValidatorsFromAssemblyContaining<CreateCustomerValidator>();
+
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services;
         }
