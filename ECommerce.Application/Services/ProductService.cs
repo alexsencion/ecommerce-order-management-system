@@ -132,10 +132,10 @@ namespace ECommerce.Application.Services
                 products = products.Where(p => p.CategoryId == query.CategoryId.Value);
 
             if (query.MinPrice.HasValue)
-                products = products.Where(p => p.Price == query.MinPrice.Value);
+                products = products.Where(p => p.Price >= query.MinPrice.Value);
 
             if (query.MaxPrice.HasValue)
-                products = products.Where(p => p.Price == query.MaxPrice.Value);
+                products = products.Where(p => p.Price <= query.MaxPrice.Value);
 
             if (query.IsActive.HasValue)
                 products = products.Where(p => p.IsActive == query.IsActive.Value);
