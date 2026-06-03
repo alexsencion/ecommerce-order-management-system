@@ -33,6 +33,7 @@ namespace ECommerce.UnitTests.Services
             {
                 cfg.AddProfile<CustomerProfile>();
                 cfg.AddProfile<ProductProfile>();
+                cfg.AddProfile<CategoryProfile>();
             }, NullLoggerFactory.Instance);
 
             _mapper = config.CreateMapper();

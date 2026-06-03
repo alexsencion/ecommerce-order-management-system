@@ -14,26 +14,6 @@ namespace ECommerce.Application.Mappings
     {
         public ProductProfile()
         {
-            CreateMap<Category, CategoryResponse>()
-                .ForMember(dest => dest.ProductCount,
-                    opt => opt.MapFrom(src => src.Products.Count(p => p.IsActive)));
-
-            CreateMap<CreateCategoryRequest, Category>()
-                .ForMember(dest => dest.Slug,
-                    opt => opt.MapFrom(src => src.Slug.ToLower().Trim()))
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.Products, opt => opt.Ignore());
-
-            CreateMap<UpdateCategoryRequest, Category>()
-                .ForMember(dest => dest.Slug,
-                    opt => opt.MapFrom(src => src.Slug.ToLower().Trim()))
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-                .ForMember(dest => dest.Products, opt => opt.Ignore());
-
             CreateMap<Product, ProductResponse>()
                 .ForMember(dest => dest.CategoryName,
                     opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : string.Empty))
