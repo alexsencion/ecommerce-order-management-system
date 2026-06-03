@@ -23,12 +23,14 @@
   <ItemGroup>
     <ProjectReference Include="..\ECommerce.API\ECommerce.API.csproj" />
     <ProjectReference Include="..\ECommerce.Infrastructure\ECommerce.Infrastructure.csproj" />
-	  <Compile Include="..\ECommerce.UnitTests\Builders\CustomerBuilder.cs" Link="Shared\CustomerBuilder.cs" />
-	  <Compile Include="..\ECommerce.UnitTests\Builders\CreateCustomerRequestBuilder.cs" Link="Shared\CreateCustomerRequestBuilder.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ECommerce.TestHelpers\ECommerce.TestHelpers.csproj" />
   </ItemGroup>
 
 </Project>

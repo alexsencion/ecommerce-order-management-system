@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECommerce.UnitTests.Builders
+namespace ECommerce.TestHelpers.Builders
 {
     public class CategoryBuilder
     {

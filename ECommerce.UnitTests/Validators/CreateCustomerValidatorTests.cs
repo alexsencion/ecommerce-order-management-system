@@ -1,6 +1,6 @@
 ﻿using ECommerce.Application.DTOs.Request;
 using ECommerce.Application.Validators;
-using ECommerce.UnitTests.Builders;
+using ECommerce.TestHelpers.Builders;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;

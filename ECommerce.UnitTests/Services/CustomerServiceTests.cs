@@ -5,7 +5,7 @@ using ECommerce.Application.Mappings;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Interfaces.Repositories;
-using ECommerce.UnitTests.Builders;
+using ECommerce.TestHelpers.Builders;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
