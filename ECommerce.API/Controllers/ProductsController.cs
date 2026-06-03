@@ -60,6 +60,7 @@ namespace ECommerce.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = result.Value!.Id }, result.Value);
         }
 
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductRequest request)
         {
             var validation = await _updateValidator.ValidateAsync(request);
