@@ -16,6 +16,15 @@ namespace ECommerce.Infrastructure.Repositories
         {
         }
 
+        public override async Task<IEnumerable<Product>> GetAllAsync() =>
+            await _dbSet
+                .Include(p => p.Category)
+                .ToListAsync();
+
+        public override async Task<Product?> GetByIdAsync(Guid id) =>
+            await _dbSet
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
         public async Task<IEnumerable<Product>> GetByCategoryAsync(Guid categoryId) => await _dbSet.Where(p => p.CategoryId == categoryId && p.IsActive).ToListAsync();
 
         public async Task<Product?> GetBySkuAsync(string sku) => await _dbSet.FirstOrDefaultAsync(p => p.Sku == sku);

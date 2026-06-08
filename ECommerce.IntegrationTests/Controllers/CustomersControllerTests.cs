@@ -2,7 +2,7 @@
 using ECommerce.Application.DTOs.Response;
 using ECommerce.Domain.Entities;
 using ECommerce.IntegrationTests.Common;
-using ECommerce.UnitTests.Builders;
+using ECommerce.TestHelpers.Builders;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;

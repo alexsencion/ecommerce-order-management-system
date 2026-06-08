@@ -5,7 +5,7 @@ using ECommerce.Application.Mappings;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Interfaces.Repositories;
-using ECommerce.UnitTests.Builders;
+using ECommerce.TestHelpers.Builders;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -26,9 +26,9 @@ namespace ECommerce.UnitTests.Services
         {
             _customerRepMock = new Mock<ICustomerRepository>();
 
-            _ouwMock.Setup(u => u.Customers).Returns(_customerRepMock.Object);
+            _uowMock.Setup(u => u.Customers).Returns(_customerRepMock.Object);
 
-            _sut = new CustomerService(_ouwMock.Object, _mapper, _loggerMock.Object);
+            _sut = new CustomerService(_uowMock.Object, _mapper, _loggerCustomerMock.Object);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace ECommerce.UnitTests.Services
                             .ReturnsAsync(false);
             _customerRepMock.Setup(r => r.AddAsync(It.IsAny<Customer>()))
                             .Returns(Task.CompletedTask);
-            _ouwMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
+            _uowMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
             var result = await _sut.CreateAsync(request);
 
@@ -73,7 +73,7 @@ namespace ECommerce.UnitTests.Services
             result.StatusCode.Should().Be(201);
             result.Value!.Email.Should().Be(request.Email.ToLower().Trim());
             _customerRepMock.Verify(r => r.AddAsync(It.IsAny<Customer>()), Times.Once);
-            _ouwMock.Verify(u => u.SaveChangesAsync(), Times.Once);
+            _uowMock.Verify(u => u.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -102,13 +102,13 @@ namespace ECommerce.UnitTests.Services
             };
 
             _customerRepMock.Setup(r => r.GetByIdAsync(customer.Id)).ReturnsAsync(customer);
-            _ouwMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
+            _uowMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
             var result = await _sut.UpdateAsync(customer.Id, request);
 
             result.IsSuccess.Should().BeTrue();
             result.Value!.FirstName.Should().Be("Updated");
-            _ouwMock.Verify(u => u.SaveChangesAsync(), Times.Once);
+            _uowMock.Verify(u => u.SaveChangesAsync(), Times.Once);
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace ECommerce.UnitTests.Services
         {
             var customer = new CustomerBuilder().Build();
             _customerRepMock.Setup(r => r.GetByIdAsync(customer.Id)).ReturnsAsync(customer);
-            _ouwMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
+            _uowMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
             var result = await _sut.DeactivateAsync(customer.Id);
 
@@ -150,7 +150,7 @@ namespace ECommerce.UnitTests.Services
 
             result.IsSuccess.Should().BeFalse();
             result.StatusCode.Should().Be(400);
-            _ouwMock.Verify(u =>  u.SaveChangesAsync(), Times.Never);
+            _uowMock.Verify(u =>  u.SaveChangesAsync(), Times.Never);
         }
 
         [Fact]
@@ -170,7 +170,7 @@ namespace ECommerce.UnitTests.Services
         {
             var customer = new CustomerBuilder().Build();
             _customerRepMock.Setup(r => r.GetByIdAsync(customer.Id)).ReturnsAsync(customer);
-            _ouwMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
+            _uowMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
             var result = await _sut.DeleteAsync(customer.Id);
 

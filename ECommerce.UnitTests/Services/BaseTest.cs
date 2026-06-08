@@ -16,17 +16,24 @@ namespace ECommerce.UnitTests.Services
     public abstract class BaseTest
     {
         protected readonly IMapper _mapper;
-        protected readonly Mock<IUnitOfWork> _ouwMock;
-        protected readonly Mock<ILogger<CustomerService>> _loggerMock;
+        protected readonly Mock<IUnitOfWork> _uowMock;
+        protected readonly Mock<ILogger<CustomerService>> _loggerCustomerMock;
+        protected readonly Mock<ILogger<ProductService>> _loggerProductMock;
+        protected readonly Mock<ILogger<CategoryService>> _loggerCategoryMock;
 
         protected BaseTest()
         {
-            _ouwMock = new Mock<IUnitOfWork>();
-            _loggerMock = new Mock<ILogger<CustomerService>>();
+            _uowMock = new Mock<IUnitOfWork>();
+            _loggerCustomerMock = new Mock<ILogger<CustomerService>>();
+            _loggerProductMock = new Mock<ILogger<ProductService>>();
+            _loggerCategoryMock = new Mock<ILogger<CategoryService>>();
+
 
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<CustomerProfile>();
+                cfg.AddProfile<ProductProfile>();
+                cfg.AddProfile<CategoryProfile>();
             }, NullLoggerFactory.Instance);
 
             _mapper = config.CreateMapper();
