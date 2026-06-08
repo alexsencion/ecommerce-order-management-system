@@ -55,7 +55,7 @@ export interface ProductQueryParams {
 
 export const categoriesApi = {
     getAll() {
-        return apiClient.get<CategoryResponse[]>('.categories');
+        return apiClient.get<CategoryResponse[]>('/categories');
     },
     create(data: { name: string; slug: string }) {
         return apiClient.post<CategoryResponse>('/categories', data);
