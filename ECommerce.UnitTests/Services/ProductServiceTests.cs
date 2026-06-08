@@ -59,7 +59,7 @@ namespace ECommerce.UnitTests.Services
         public async Task CreateAsync_ValidRequest_CreatesProduct()
         {
             var categoryId = Guid.NewGuid();
-            var category = new CategoryBuilder().Build();
+            var category = new CategoryBuilder().WithName("Electronics").Build();
             var request = new CreateProductRequest
             {
                 CategoryId = categoryId,
@@ -72,14 +72,24 @@ namespace ECommerce.UnitTests.Services
             _categoryRepoMock.Setup(r => r.GetByIdAsync(categoryId)).ReturnsAsync(category);
             _productRepoMock.Setup(r => r.GetBySkuAsync("NEW-001")).ReturnsAsync((Product?)null);
             _productRepoMock.Setup(r => r.AddAsync(It.IsAny<Product>())).Returns(Task.CompletedTask);
+
+            var createdProduct = new ProductBuilder()
+                .WithSku("NEW-001")
+                .WithCategoryId(categoryId)
+                .Build();
+
+            createdProduct.Category = category;
+
             _productRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
-                            .ReturnsAsync(new ProductBuilder().WithSku("NEW-001").Build());
+                            .ReturnsAsync(createdProduct);
             _uowMock.Setup(u => u.SaveChangesAsync()).ReturnsAsync(1);
 
             var result = await _sut.CreateAsync(request);
 
             result.IsSuccess.Should().BeTrue();
             result.StatusCode.Should().Be(201);
+            result.Value!.CategoryName.Should().Be("Electronics");
+
             _productRepoMock.Verify(r => r.AddAsync(It.IsAny<Product>()), Times.Once);
         }
 
