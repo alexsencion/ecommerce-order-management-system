@@ -23,5 +23,24 @@ namespace ECommerce.Domain.Entities
         public ICollection<OrderStatusHistory> StatusHistory { get; set; } = new List<OrderStatusHistory>();
         public Payment? Payment { get; set; }
         public Shipment? Shipment { get; set; }
+
+        public OrderStatusHistory Transition(OrderStatus newStatus, string? notes = null)
+        {
+            if (!OrderStateMachine.CanTransition(Status, newStatus))
+                throw new InvalidOperationException(
+                    $"Cannot transition order from {Status} to {newStatus}.");
+
+            var history = new OrderStatusHistory
+            {
+                OrderId = Id,
+                FromStatus = Status,
+                ToStatus = newStatus,
+                Notes = notes,
+                ChangeAt = DateTime.UtcNow
+            };
+
+            Status = newStatus;
+            return history;
+        }
     }
 }
