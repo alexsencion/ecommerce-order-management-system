@@ -36,7 +36,7 @@ namespace ECommerce.Domain.Entities
                 FromStatus = Status,
                 ToStatus = newStatus,
                 Notes = notes,
-                ChangeAt = DateTime.UtcNow
+                ChangedAt = DateTime.UtcNow
             };
 
             Status = newStatus;

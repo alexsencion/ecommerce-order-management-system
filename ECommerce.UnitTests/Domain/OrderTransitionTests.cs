@@ -29,7 +29,7 @@ namespace ECommerce.UnitTests.Domain
             history.FromStatus.Should().Be(OrderStatus.Pending);
             history.ToStatus.Should().Be(OrderStatus.Confirmed);
             history.Notes.Should().Be("Payment received");
-            history.ChangeAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            history.ChangedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         }
 
         [Fact]
