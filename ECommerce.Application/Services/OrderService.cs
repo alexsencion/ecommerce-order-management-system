@@ -63,7 +63,7 @@ namespace ECommerce.Application.Services
 
                 var history = order.Transition(OrderStatus.Cancelled,
                     reason ?? "Cancelled by request.");
-                order.StatusHistory.Add(history);
+                await _uow.Repository<OrderStatusHistory>().AddAsync(history);
                 _uow.Orders.Update(order);
                 await _uow.SaveChangesAsync();
                 await _uow.CommitTransactionAsync();
@@ -244,7 +244,7 @@ namespace ECommerce.Application.Services
                 }
 
                 var history = order.Transition(request.NewStatus, request.Notes);
-                order.StatusHistory.Add(history);
+                await _uow.Repository<OrderStatusHistory>().AddAsync(history);
                 _uow.Orders.Update(order);
                 await _uow.SaveChangesAsync();
                 await _uow.CommitTransactionAsync();

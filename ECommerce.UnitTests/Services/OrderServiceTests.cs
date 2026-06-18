@@ -22,6 +22,7 @@ namespace ECommerce.UnitTests.Services
         private readonly Mock<IOrderRepository> _orderRepoMock = new();
         private readonly Mock<ICustomerRepository> _customerRepoMock = new();
         private readonly Mock<IProductRepository> _productRepoMock = new();
+        private readonly Mock<IGenericRepository<OrderStatusHistory>> _historyRepo = new();
 
         private readonly OrderService _sut;
 
@@ -30,6 +31,10 @@ namespace ECommerce.UnitTests.Services
             _uowMock.Setup(u => u.Orders).Returns(_orderRepoMock.Object);
             _uowMock.Setup(u => u.Customers).Returns(_customerRepoMock.Object);
             _uowMock.Setup(u => u.Products).Returns(_productRepoMock.Object);
+            _uowMock.Setup(u => u.Repository<OrderStatusHistory>())
+                    .Returns(_historyRepo.Object);
+            _historyRepo.Setup(r => r.AddAsync(It.IsAny<OrderStatusHistory>()))
+                        .Returns(Task.CompletedTask);
 
             _sut = new OrderService(_uowMock.Object, _mapper, _loggerOrderMock.Object);
         }
@@ -178,6 +183,11 @@ namespace ECommerce.UnitTests.Services
 
             result.IsSuccess.Should().BeTrue();
             order.Status.Should().Be(OrderStatus.Confirmed);
+
+            _historyRepo.Verify(r =>
+                r.AddAsync(It.Is<OrderStatusHistory>(h =>
+                    h.ToStatus == OrderStatus.Confirmed)), Times.Once());
+
             _uowMock.Verify(u => u.CommitTransactionAsync(), Times.Once);
         }
 
