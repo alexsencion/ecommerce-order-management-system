@@ -18,7 +18,7 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
             builder.Property(c => c.LastName).IsRequired().HasMaxLength(100);
             builder.Property(c => c.Email).IsRequired().HasMaxLength(255);
             builder.HasIndex(c => c.Email).IsUnique();
-            builder.Property(c => c.Phone).IsRequired().HasMaxLength(20);
+            builder.Property(c => c.Phone).IsRequired(false).HasMaxLength(20);
         }
     }
 }
