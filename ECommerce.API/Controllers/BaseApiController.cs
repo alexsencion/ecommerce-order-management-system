@@ -15,9 +15,11 @@ namespace ECommerce.API.Controllers
 
             return result.StatusCode switch
             {
+                400 => BadRequest(new { error = result.Error }),
                 404 => NotFound(new { error = result.Error }),
                 409 => Conflict(new { error = result.Error }),
-                _ => BadRequest(new { error = result.Error })
+                422 => UnprocessableEntity(new { error = result.Error }),
+                _ => StatusCode(result.StatusCode, new { error = result.Error })
             };
         }
     }
