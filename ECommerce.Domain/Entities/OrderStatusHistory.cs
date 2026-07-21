@@ -14,7 +14,7 @@ namespace ECommerce.Domain.Entities
         public OrderStatus FromStatus{ get; set; }
         public OrderStatus ToStatus { get; set; }
         public string? Notes { get; set; }
-        public DateTime ChangeAt { get; set; } = DateTime.UtcNow;
+        public DateTime ChangedAt { get; set; } = DateTime.UtcNow;
 
         public Order Order { get; set; } = null!;
     }

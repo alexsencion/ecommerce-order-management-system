@@ -14,7 +14,6 @@ namespace ECommerce.Domain.Entities
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal LineTotal => UnitPrice * Quantity;
-
         public Order Order { get; set; } = null!;
         public Product Product { get; set; } = null!;
     }
