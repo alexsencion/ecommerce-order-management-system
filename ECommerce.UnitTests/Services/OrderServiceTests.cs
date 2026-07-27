@@ -19,7 +19,6 @@ namespace ECommerce.UnitTests.Services
 {
     public class OrderServiceTests : BaseTest
     {
-        private readonly Mock<IOrderRepository> _orderRepoMock = new();
         private readonly Mock<ICustomerRepository> _customerRepoMock = new();
         private readonly Mock<IProductRepository> _productRepoMock = new();
         private readonly Mock<IGenericRepository<OrderStatusHistory>> _historyRepo = new();
