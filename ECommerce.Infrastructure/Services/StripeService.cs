@@ -39,6 +39,7 @@ namespace ECommerce.Infrastructure.Services
                     AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
                     {
                         Enabled = true,
+                        AllowRedirects = "never"
                     }
                 };
 
@@ -82,16 +83,28 @@ namespace ECommerce.Infrastructure.Services
             {
                 var stripeEvent = EventUtility.ConstructEvent(payload, signature, _settings.WebhookSecret);
 
-                if (stripeEvent.Data.Object is not PaymentIntent intent)
-                    return null;
-
-                return new StripeWebhookResult
+                var result = new StripeWebhookResult
                 {
-                    EventType = stripeEvent.Type,
-                    PaymentIntentId = intent.Id,
-                    Status = intent.Status,
-                    Amount = intent.Amount / 100m
+                    EventType = stripeEvent.Type
                 };
+
+                switch (stripeEvent.Data.Object)
+                {
+                    case PaymentIntent intent:
+                        result.PaymentIntentId = intent.Id;
+                        result.Status = intent.Status;
+                        result.Amount = intent.Amount / 100m;
+                        break;
+
+                    case Charge charge:
+                        result.PaymentIntentId = charge.PaymentIntentId;
+                        break;
+
+                    case Refund refund:
+                        break;
+                }
+                return result;
+
             }
             catch (StripeException ex)
             {

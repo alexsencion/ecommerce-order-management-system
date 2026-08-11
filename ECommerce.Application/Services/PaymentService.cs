@@ -6,6 +6,7 @@ using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,17 +23,19 @@ namespace ECommerce.Application.Services
         private readonly StripeSettings _stripeSettings;
         private readonly ILogger<PaymentService> _logger;
 
-        public PaymentService(IUnitOfWork uow, IStripeService stripe, IMapper mapper, StripeSettings stripeSettings, ILogger<PaymentService> logger)
+        public PaymentService(IUnitOfWork uow, IStripeService stripe, IMapper mapper, IOptions<StripeSettings> options, ILogger<PaymentService> logger)
         {
             _uow = uow;
             _stripe = stripe;
             _mapper = mapper;
-            _stripeSettings = stripeSettings;
+            _stripeSettings = options.Value;
             _logger = logger;
         }
 
         public async Task<Result<PaymentIntentResponse>> CreatePaymentIntentAsync(CreatePaymentIntentRequest request)
         {
+            _logger.LogInformation("Stripe Secret Key: {Key}", _stripeSettings.SecretKey);
+
             var order = await _uow.Orders.GetWithDetailsAsync(request.OrderId);
             if (order == null)
                 return Result<PaymentIntentResponse>.NotFound(
@@ -42,6 +45,8 @@ namespace ECommerce.Application.Services
                 return Result<PaymentIntentResponse>.Failure(
                     $"Only confirmed orders can be paid. " +
                     $"Current status: {order.Status}.");
+
+            
 
             var existing = await _uow.Repository<Payment>()
                 .FindAsync(p => p.OrderId == request.OrderId);
@@ -111,9 +116,13 @@ namespace ECommerce.Application.Services
             if (webhookEvent == null)
                 return Result<bool>.Failure("Invalid webhook signature.", 400);
 
-            _logger.LogInformation(
-                "Stripe webhook received: {EventType} for PaymentIntent {PaymentIntentId}",
-                webhookEvent.EventType, webhookEvent.PaymentIntentId);
+            if (string.IsNullOrEmpty(webhookEvent.PaymentIntentId))
+            {
+                _logger.LogInformation(
+                    "Ignoring Stripe event {EventType} because it has no PaymentIntentId",
+                    webhookEvent.EventType);
+                return Result<bool>.Success(true);
+            }
 
             var payments = await _uow.Repository<Payment>()
                 .FindAsync(p => p.StripePaymentIntentId == webhookEvent.PaymentIntentId);
@@ -133,7 +142,12 @@ namespace ECommerce.Application.Services
                 switch (webhookEvent.EventType)
                 {
                     case StripeWebhookResult.PaymentSucceeded:
+                        _logger.LogInformation("Processing payment success for Payment {PaymentId}",
+                            payment.Id);
                         await HandlePaymentSucceded(payment);
+
+                        _logger.LogInformation("Payment success processed for Payment {PaymentId}",
+                            payment.Id);
                         break;
 
                     case StripeWebhookResult.PaymentFailed:
@@ -195,7 +209,7 @@ namespace ECommerce.Application.Services
 
                 var history = order.Transition(
                     OrderStatus.Cancelled, "Refunded via Stripe.");
-                order.StatusHistory.Add(history);
+                await _uow.Repository<OrderStatusHistory>().AddAsync(history);
                 _uow.Orders.Update(order);
 
                 await _uow.SaveChangesAsync();
@@ -216,16 +230,41 @@ namespace ECommerce.Application.Services
 
         private async Task HandlePaymentSucceded(Payment payment)
         {
+            _logger.LogInformation(
+                "Starting payment success handler for payment {PaymentId}",
+                payment.Id);
+
             payment.Status = PaymentStatus.Succeeded;
             payment.PaidAt = DateTime.UtcNow;
+
             _uow.Repository<Payment>().Update(payment);
 
+            _logger.LogInformation(
+                "Payment updated, loading order {OrderId}",
+                payment.OrderId);
+
             var order = await _uow.Orders.GetWithDetailsAsync(payment.OrderId);
+
+            if (order == null)
+            {
+                _logger.LogWarning(
+                    "Order not found {OrderId}",
+                    payment.OrderId);
+            }
+            else
+            {
+                _logger.LogInformation(
+                "Order {OrderId} status is {Status}",
+                order.Id,
+                order.Status);
+            }
+
             if (order != null && order.Status == OrderStatus.Confirmed)
             {
                 var history = order.Transition(
                     OrderStatus.Processing, "Payment confirmed via Stripe.");
-                order.StatusHistory.Add(history);
+                order.StatusHistory ??= new List<OrderStatusHistory>();
+                await _uow.Repository<OrderStatusHistory>().AddAsync(history);
                 _uow.Orders.Update(order);
             }
 

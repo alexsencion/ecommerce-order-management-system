@@ -22,6 +22,8 @@ namespace ECommerce.UnitTests.Services
     {
         private readonly Mock<IStripeService> _stripeMock = new();
         private readonly Mock<IGenericRepository<Payment>> _paymentRepo = new();
+        private readonly Mock<IGenericRepository<OrderStatusHistory>> _historyRepo = new();
+
 
         private readonly PaymentService _sut;
 
@@ -32,10 +34,12 @@ namespace ECommerce.UnitTests.Services
             WebhookSecret = "whsec_fake"
         };
 
-        public PaymentServiceTests()
+        public PaymentServiceTests() : base()
         {
             _uowMock.Setup(u => u.Orders).Returns(_orderRepoMock.Object);
             _uowMock.Setup(u => u.Repository<Payment>()).Returns(_paymentRepo.Object);
+            _uowMock.Setup(u => u.Repository<OrderStatusHistory>())
+                    .Returns(_historyRepo.Object);
             _uowMock.Setup(u => u.BeginTransactionAsync()).Returns(Task.CompletedTask);
             _uowMock.Setup(u => u.CommitTransactionAsync()).Returns(Task.CompletedTask);
             _uowMock.Setup(u => u.RollbackTransactionAsync()).Returns(Task.CompletedTask);
@@ -45,7 +49,7 @@ namespace ECommerce.UnitTests.Services
                 _uowMock.Object,
                 _stripeMock.Object,
                 _mapper,
-                _stripeSettings,
+                Options.Create(_stripeSettings),
                 _loggerPaymentMock.Object);
         }
 

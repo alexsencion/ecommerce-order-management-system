@@ -9,7 +9,7 @@ namespace ECommerce.Application.Common
     public class StripeWebhookResult
     {
         public string EventType { get; set; } = string.Empty;
-        public string PaymentIntentId { get; set; } = string.Empty;
+        public string? PaymentIntentId { get; set; }
         public string Status { get; set; } = string.Empty;
         public decimal Amount { get; set; }
 
