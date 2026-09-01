@@ -13,6 +13,7 @@
     "vite": "^8.0.10"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^9.13.0",
     "axios": "^1.16.0",
     "bootstrap": "^5.3.8"
   }

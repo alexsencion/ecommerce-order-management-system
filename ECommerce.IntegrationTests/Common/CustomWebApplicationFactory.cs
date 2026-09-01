@@ -1,4 +1,5 @@
-﻿using ECommerce.Infrastructure.Persistence;
+﻿using ECommerce.Application.Services;
+using ECommerce.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.SqlClient;
@@ -35,6 +36,14 @@ namespace ECommerce.IntegrationTests.Common
                 {
                     options.UseSqlite(_connection);
                 });
+
+               var stripeDescriptor = services.SingleOrDefault(
+                   d => d.ServiceType == typeof(IStripeService));
+                if (stripeDescriptor != null) 
+                    services.Remove(stripeDescriptor);
+
+                services.AddScoped<IStripeService, FakeStripeService>();
+                  
 
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();

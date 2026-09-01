@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\Services\**" />
+    <EmbeddedResource Remove="Interfaces\Services\**" />
+    <None Remove="Interfaces\Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Events\" />
   </ItemGroup>
 
