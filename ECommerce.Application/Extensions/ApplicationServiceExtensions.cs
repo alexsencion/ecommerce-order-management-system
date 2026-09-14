@@ -28,6 +28,7 @@ namespace ECommerce.Application.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IShippingService, ShippingService>();
 
             return services;
         }
