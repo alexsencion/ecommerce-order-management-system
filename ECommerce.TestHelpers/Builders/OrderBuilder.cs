@@ -15,7 +15,7 @@ namespace ECommerce.TestHelpers.Builders
         private List<OrderItem> _items = new();
         private string _shippingJson = """{"street":"123 Main","city":"SD","zipCode":"10101","country":"DO"}""";
 
-        public OrderBuilder WithCustomerId(Guid Id) { _customerId = Id; return this; }
+        public OrderBuilder WithCustomerId(Guid id) { _customerId = id; return this; }
         public OrderBuilder WithStatus(OrderStatus s) { _status = s; return this; }
         public OrderBuilder WithShippingJson(string j) { _shippingJson = j; return this; }
         public OrderBuilder WithItems(List<OrderItem> items) { _items = items; return this; }
