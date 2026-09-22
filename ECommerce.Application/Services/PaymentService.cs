@@ -294,7 +294,7 @@ namespace ECommerce.Application.Services
             {
                 var history = order.Transition(
                     OrderStatus.Cancelled, "Payment cancelled via Stripe.");
-                order.StatusHistory.Add(history);
+                await _uow.Repository<OrderStatusHistory>().AddAsync(history);
                 _uow.Orders.Update(order);
             }
 
