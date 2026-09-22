@@ -37,14 +37,15 @@ namespace ECommerce.Application.Services
                 return Result<ShipmentResponse>.NotFound(
                     $"Order {request.OrderId} not found.");
 
+            if (order.Shipment != null)
+                return Result<ShipmentResponse>.Conflict(
+                    "A shipment already exists for this order.");
+
             if (order.Status != OrderStatus.Packed)
                 return Result<ShipmentResponse>.Failure(
                     $"Only packed orders can be shipped. " +
                     $"Current status: {order.Status}.");
-
-            if (order.Shipment != null)
-                return Result<ShipmentResponse>.Conflict(
-                    "A shipment already exists for this order.");
+            
 
             await _uow.BeginTransactionAsync();
             try
@@ -57,18 +58,19 @@ namespace ECommerce.Application.Services
 
                 await _uow.Repository<Shipment>().AddAsync(shipment);
 
-                var histoy = order.Transition(
+                var history = order.Transition(
                     OrderStatus.Shipped,
                     $"Shipped via {request.Carrier}. " +
                     $"Tracking: {request.TrackingNumber}");
-                order.StatusHistory.Add(histoy);
+                
+                await _uow.Repository<OrderStatusHistory>().AddAsync(history);
                 _uow.Orders.Update(order);
 
                 await _uow.SaveChangesAsync();
                 await _uow.CommitTransactionAsync();
 
                 _logger.LogInformation(
-                    "Shipment creaed for order {OrderId}. " +
+                    "Shipment created for order {OrderId}. " +
                     "Carrier: {Carrier}, Tracking: {TrackingNumber}",
                     order.Id, request.Carrier, request.TrackingNumber);
 
@@ -150,7 +152,7 @@ namespace ECommerce.Application.Services
                 {
                     var history = order.Transition(
                         OrderStatus.Delivered, "Delivery confirmed.");
-                    order.StatusHistory.Add(history);
+                    await _uow.Repository<OrderStatusHistory>().AddAsync(history);
                     _uow.Orders.Update(order);
                 }
 
