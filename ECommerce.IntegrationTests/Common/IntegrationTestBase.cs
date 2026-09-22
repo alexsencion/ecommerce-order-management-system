@@ -95,6 +95,16 @@ namespace ECommerce.IntegrationTests.Common
             return (customer, product, order);
         }
 
+        protected async Task<(Order order, Product product)> SeedPackedOrderAsync()
+        {
+            var (_, product, order) = await SeedOrderAsync(
+                stockQuantity: 100,
+                reservedQuantity: 0,
+                status: OrderStatus.Packed);
+
+            return (order, product);
+        }
+
         protected async Task<T?> ReloadAsync<T>(Guid id) where T : class
         {
             var tracked = DbContext.ChangeTracker
