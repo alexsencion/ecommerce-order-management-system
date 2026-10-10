@@ -11,6 +11,7 @@ import { showConfirmModal } from '../components/modal';
 import { openCreateOrderWizard } from '../components/createOrderWizard';
 import { PAYMENT_STATUS_LABELS, paymentsApi, PaymentStatus } from '../api/payments';
 import { openPaymentModal } from '../components/paymentModal';
+import { renderShipmentSection } from '../components/shipmentPanel';
 
 // ── State ──────────────────────────────────────────────────────────────────
 let currentPage         = 1;
@@ -161,9 +162,10 @@ function renderOrderDetail(
   console.log('Order status:', o.status, 'Payment status:', paymentStatus);
   const allowed   = ALLOWED_TRANSITIONS[o.status];
   const canCancel = allowed.includes(OrderStatus.Cancelled);
+  const SHIPMENT_MANAGED = [OrderStatus.Shipped, OrderStatus.Delivered];
 
   const transitionButtons = allowed
-    .filter(s => s !== OrderStatus.Cancelled)
+    .filter(s => s !== OrderStatus.Cancelled && !SHIPMENT_MANAGED.includes(s))
     .map(s => `
       <button class="btn btn-primary btn-sm btn-transition"
               data-id="${o.id}" data-status="${s}">
@@ -311,6 +313,16 @@ function renderOrderDetail(
       <div class="small">${escHtml(o.notes)}</div>
     </div>` : ''}
 
+    <!-- Shipping -->
+    ${[OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered]
+        .includes(o.status) ? `
+    <div class="mb-3">
+      <div class="small text-muted fw-semibold mb-2">SHIPPING</div>
+      <div id="shipment-section">
+        <p class="text-muted small">Loading…</p>
+      </div>
+    </div>` : ''}
+
     <!-- Action Errors -->
     <div id="panel-action-error" class="alert alert-danger d-none small py-2 mb-3"></div>
 
@@ -320,7 +332,8 @@ function renderOrderDetail(
       ${transitionButtons}
       ${refundButton}
       ${cancelButton}
-      ${!payButton && !transitionButtons && !refundButton && !cancelButton ? `
+      ${!payButton && !transitionButtons && !refundButton && !cancelButton
+        && ![OrderStatus.Packed, OrderStatus.Shipped].includes(o.status) ? `
         <span class="text-muted small">No further actions available.</span>` : ''}
     </div>`;
 }
@@ -498,6 +511,18 @@ async function openPanel(orderId: string): Promise<void> {
 
     content.innerHTML = renderOrderDetail(order, paymentStatus);
     bindPanelEvents();
+
+    const shipmentContainer = document.getElementById('shipment-section');
+    if (shipmentContainer) {
+      await renderShipmentSection(shipmentContainer, {
+        orderId: order.id,
+        orderStatus: order.status,
+        onUpdate: () => {
+          openPanel(orderId);
+          loadOrders();
+        },
+      });
+    }
   } catch (err: any) {
     content.innerHTML =
       `<div class="alert alert-danger small">${err.message}</div>`;
