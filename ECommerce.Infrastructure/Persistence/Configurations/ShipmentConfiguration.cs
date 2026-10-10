@@ -16,6 +16,8 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Carrier).IsRequired().HasMaxLength(100);
             builder.Property(s => s.TrackingNumber).IsRequired().HasMaxLength(200);
+            builder.Property(s => s.Status).IsRequired();
+            builder.Property(s => s.Notes).HasMaxLength(500);
         }
     }
 }

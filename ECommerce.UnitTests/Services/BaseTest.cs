@@ -23,6 +23,7 @@ namespace ECommerce.UnitTests.Services
         protected readonly Mock<ILogger<CategoryService>> _loggerCategoryMock;
         protected readonly Mock<ILogger<OrderService>> _loggerOrderMock;
         protected readonly Mock<ILogger<PaymentService>> _loggerPaymentMock;
+        protected readonly Mock<ILogger<ShippingService>> _loggerShipmentMock;
 
         protected BaseTest()
         {
@@ -33,6 +34,7 @@ namespace ECommerce.UnitTests.Services
             _loggerCategoryMock = new Mock<ILogger<CategoryService>>();
             _loggerOrderMock = new Mock<ILogger<OrderService>>();
             _loggerPaymentMock = new Mock<ILogger<PaymentService>>();
+            _loggerShipmentMock = new Mock<ILogger<ShippingService>>();
 
 
             var config = new MapperConfiguration(cfg =>
@@ -42,6 +44,7 @@ namespace ECommerce.UnitTests.Services
                 cfg.AddProfile<CategoryProfile>();
                 cfg.AddProfile<OrderProfile>();
                 cfg.AddProfile<PaymentProfile>();
+                cfg.AddProfile<ShippingProfile>();
             }, NullLoggerFactory.Instance);
 
             _mapper = config.CreateMapper();
