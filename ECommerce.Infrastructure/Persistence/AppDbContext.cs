@@ -22,6 +22,7 @@ namespace ECommerce.Infrastructure.Persistence
         public DbSet<OrderStatusHistory> OrderStatusHistories => Set<OrderStatusHistory>();
         public DbSet<Payment> Payments => Set<Payment>();
         public DbSet<Shipment> Shipments => Set<Shipment>();
+        public DbSet<Invoice> Invoices => Set<Invoice>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

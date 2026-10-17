@@ -12,6 +12,7 @@ namespace ECommerce.Domain.Interfaces.Repositories
         IProductRepository Products { get; }
         IOrderRepository Orders { get; }
         ICategoryRepository Categories { get; }
+        IInvoiceRepository Invoices { get; }
         IGenericRepository<T> Repository<T>() where T : Domain.Common.BaseEntity;
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();
