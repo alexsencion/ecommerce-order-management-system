@@ -1,9 +1,11 @@
 ﻿using ECommerce.Application.Common;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Interfaces.Repositories;
+using ECommerce.Infrastructure.Documents;
 using ECommerce.Infrastructure.Persistence;
 using ECommerce.Infrastructure.Repositories;
 using ECommerce.Infrastructure.Services;
+using ECommerce.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +39,15 @@ namespace ECommerce.Infrastructure.Extensions
             services.Configure<StripeSettings>(
                 configuration.GetSection(StripeSettings.SectionName));
 
+            services.Configure<FileStorageSettings>(
+                configuration.GetSection(FileStorageSettings.SectionName));
+            services.Configure<InvoiceSettings>(
+                configuration.GetSection(InvoiceSettings.SectionName));
+
             services.AddScoped<IStripeService, StripeService>();
+
+            services.AddSingleton<IFileStorage, LocalFileStorage>();
+            services.AddSingleton<IInvoicePdfGenerator, QuestPdfInvoiceGenerator>();
 
             return services;
         }
