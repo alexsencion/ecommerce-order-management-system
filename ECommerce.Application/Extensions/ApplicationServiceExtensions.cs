@@ -3,6 +3,7 @@ using ECommerce.Application.Services;
 using ECommerce.Application.Validators;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,9 @@ namespace ECommerce.Application.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IShippingService, ShippingService>();
+
+            services.TryAddSingleton(TimeProvider.System);
+
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IReportService, ReportService>();
 
