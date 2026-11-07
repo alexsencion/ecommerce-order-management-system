@@ -25,6 +25,8 @@ namespace ECommerce.UnitTests.Services
         protected readonly Mock<ILogger<PaymentService>> _loggerPaymentMock;
         protected readonly Mock<ILogger<ShippingService>> _loggerShipmentMock;
         protected readonly Mock<ILogger<InvoiceService>> _loggerInvoiceMock;
+        protected readonly Mock<ILogger<ReportService>> _loggerReportMock;
+
 
         protected BaseTest()
         {
@@ -37,6 +39,7 @@ namespace ECommerce.UnitTests.Services
             _loggerPaymentMock = new Mock<ILogger<PaymentService>>();
             _loggerShipmentMock = new Mock<ILogger<ShippingService>>();
             _loggerInvoiceMock = new Mock<ILogger<InvoiceService>>();
+            _loggerReportMock = new Mock<ILogger<ReportService>>();
 
             var config = new MapperConfiguration(cfg =>
             {
