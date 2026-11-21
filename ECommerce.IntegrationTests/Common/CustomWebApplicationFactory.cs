@@ -43,8 +43,14 @@ namespace ECommerce.IntegrationTests.Common
                     services.Remove(stripeDescriptor);
 
                 services.AddScoped<IStripeService, FakeStripeService>();
-                  
 
+                var storageDescriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(IFileStorage));
+                if (storageDescriptor != null)
+                    services.Remove(storageDescriptor);
+
+                services.AddSingleton<IFileStorage, InMemoryFileStorage>();
+                  
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
