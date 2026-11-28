@@ -39,3 +39,6 @@ Thumbs.db
 
 # Github
 .github/
+
+# Generated invoice PDFs
+storage/

@@ -1,4 +1,5 @@
-﻿using ECommerce.Domain.Entities;
+﻿using ECommerce.Application.Services;
+using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enums;
 using ECommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -116,6 +117,9 @@ namespace ECommerce.IntegrationTests.Common
 
             return await DbContext.Set<T>().FindAsync(id);
         }
+
+        protected InMemoryFileStorage Storage =>
+            (InMemoryFileStorage)Factory.Services.GetRequiredService<IFileStorage>();
 
         public void Dispose()
         {

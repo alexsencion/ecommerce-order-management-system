@@ -12,7 +12,7 @@ let currentPage = 1;
 let currentSearch = '';
 let editingId: string | null = null;
 
-export function initCustomerPage(container: HTMLElement): void {
+export function initCustomersPage(container: HTMLElement): void {
     container.innerHTML = pageTemplate();
     bindEvents();
     loadCustomers();

@@ -31,6 +31,13 @@ export const ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
     [OrderStatus.Cancelled]: [],
 };
 
+export const PAID_STATUSES: OrderStatus[] = [
+    OrderStatus.Processing,
+    OrderStatus.Packed,
+    OrderStatus.Shipped,
+    OrderStatus.Delivered
+];
+
 export interface ShippingAddress {
     street: string;
     city: string;

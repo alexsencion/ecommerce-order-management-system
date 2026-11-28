@@ -1,0 +1,16 @@
+﻿using AutoMapper;
+using ECommerce.Application.DTOs.Response;
+using ECommerce.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ECommerce.Application.Mappings
+{
+    public class InvoiceProfile : Profile
+    {
+        public InvoiceProfile() => CreateMap<Invoice, InvoiceResponse>();
+    }
+}

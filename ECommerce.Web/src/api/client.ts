@@ -7,13 +7,23 @@ export const apiClient = axios.create({
     headers: { 'Content-Type': 'application/json' }
 });
 
+export class ApiError extends Error {
+    constructor(message: string, public readonly status?: number) {
+        super(message)
+        this.name = 'ApiError';
+    }
+}
+
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
+        const data = error.response?.data;
         const message = 
-            error.response?.data?.error ??
-            error.response?.data?.errors?.[0] ??
+            data?.errors?.join?.(' ') ??
+            data?.error ??
+            data?.message ??
+            error.message ??
             'An unexpected error occurred.';
-        return Promise.reject(new Error(message));
+        return Promise.reject(new ApiError(message, error.response?.status));
     }
 );

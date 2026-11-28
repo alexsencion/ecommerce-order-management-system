@@ -4,6 +4,7 @@ import {
   OrderStatus,
   ORDER_STATUS_LABELS,
   ALLOWED_TRANSITIONS,
+  PAID_STATUSES,
   type OrderQueryParams,
 } from '../api/orders';
 import { showToast }        from '../components/toast';
@@ -12,6 +13,7 @@ import { openCreateOrderWizard } from '../components/createOrderWizard';
 import { PAYMENT_STATUS_LABELS, paymentsApi, PaymentStatus } from '../api/payments';
 import { openPaymentModal } from '../components/paymentModal';
 import { renderShipmentSection } from '../components/shipmentPanel';
+import { renderInvoiceSection } from '../components/invoiceSection';
 
 // ── State ──────────────────────────────────────────────────────────────────
 let currentPage         = 1;
@@ -313,6 +315,13 @@ function renderOrderDetail(
       <div class="small">${escHtml(o.notes)}</div>
     </div>` : ''}
 
+    <!-- Invoice -->
+    ${PAID_STATUSES.includes(o.status) ? `
+    <div class="mb-3">
+      <div class="small text-muted fw-semibold mb-2">INVOICE</div>
+      <div id="invoice-section"></div>
+    </div>` : ''}
+
     <!-- Shipping -->
     ${[OrderStatus.Packed, OrderStatus.Shipped, OrderStatus.Delivered]
         .includes(o.status) ? `
@@ -522,6 +531,10 @@ async function openPanel(orderId: string): Promise<void> {
           loadOrders();
         },
       });
+    }
+    const invoiceContainer = document.getElementById('invoice-section');
+    if (invoiceContainer) {
+      await renderInvoiceSection(invoiceContainer, order.id);
     }
   } catch (err: any) {
     content.innerHTML =
